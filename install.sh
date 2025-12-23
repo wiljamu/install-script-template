@@ -112,7 +112,7 @@ sudo pacman -Syu $NOCONFIRM
 # Install core packages
 if [[ ${#CORE_PACKAGES[@]} -gt 0 ]]; then
     echo "Installing core packages..."
-    sudo pacman -S --needed $NOCONFIRM "${CORE_PACKAGES[@]}"
+    sudo pacman -S $NOCONFIRM ${CORE_PACKAGES[@]}
 else
     echo "No core packages defined."
 fi
@@ -120,7 +120,7 @@ fi
 # Install selected optional packages
 if [[ ${#SELECTED_OPTIONAL[@]} -gt 0 ]]; then
     echo "Installing selected optional packages..."
-    sudo pacman -S --needed $NOCONFIRM "${SELECTED_OPTIONAL[@]}"
+    sudo pacman -S $NOCONFIRM ${SELECTED_OPTIONAL[@]}
 else
     echo "No optional packages selected for installation."
 fi
@@ -128,7 +128,7 @@ fi
 # Install AUR packages
 if [[ ${#AUR_PACKAGES[@]} -gt 0 ]]; then
     echo "Installing AUR packages using yay..."
-    yay -S --needed $NOCONFIRM "${AUR_PACKAGES[@]}"
+    yay -S $NOCONFIRM ${AUR_PACKAGES[@]}
 else
     echo "No AUR packages defined."
 fi
