@@ -1,0 +1,2 @@
+# This is where to list optional packages for installation. Each will be confirmed before install.
+# Add only one package name per line.

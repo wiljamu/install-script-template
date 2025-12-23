@@ -1,0 +1,2 @@
+# This installs all core packages needed for the configuration.
+# Add only one package name per line.
