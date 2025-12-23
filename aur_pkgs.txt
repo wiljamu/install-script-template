@@ -1,2 +1,1 @@
-# This is for entries that are on the Arch User Repository, and will be installed with Yay.
-# Add only one package name per line.
+

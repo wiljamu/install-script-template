@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Config & Backup directories
+CONFIG_SOURCE="$SCRIPT_DIR/config/"
+BACKUP_DIR="$HOME/.config/backup-$(date +%Y%m%d-%H%M%S)"
+
 # Define list of required packages.
 PACKAGE_LIST="pkg_list.txt"
 
@@ -30,7 +34,7 @@ read_packages() {
 
 # Load package arrays
 mapfile -t CORE_PACKAGES <<< "$(read_packages "$CORE_PKGS")"
-mapfile -t OPTIONAL_PACKAGES <<< "$(read_packages "$OPTIONAL_PKGS")"
+mapfile -t ALL_OPTIONAL_PACKAGES <<< "$(read_packages "$OPTIONAL_PKGS")"
 mapfile -t AUR_PACKAGES <<< "$(read_packages "$AUR_PKGS")"
 
 echo "This script installs packages defined in separate text files using pacman and yay."
@@ -105,7 +109,7 @@ sudo pacman -Syu $NOCONFIRM
 
 # Install core packages
 if [[ ${#CORE_PACKAGES[@]} -gt 0 ]]; then
-    echo "Installing core Hyprland packages..."
+    echo "Installing core packages..."
     sudo pacman -S --needed $NOCONFIRM "${CORE_PACKAGES[@]}"
 else
     echo "No core packages defined."
@@ -128,5 +132,53 @@ else
 fi
 
 echo "Package installation complete."
+
+read -p "Would you like to transfer configuration files now? (y/N): " transfer_configs
+if [[ ! "$transfer_configs" =~ ^[Yy]$ ]]; then
+    echo "Skipping config transfer. Setup complete."
+    echo "You can run a separate dotfiles script later if desired."
+    exit 0
+fi
+
+echo "Config source directory: $CONFIG_SOURCE"
+echo "Existing configs will be backed up to: $BACKUP_DIR"
+
+read -p "Proceed with config transfer? (y/N): " confirm_transfer
+if [[ ! "$confirm_transfer" =~ ^[Yy]$ ]]; then
+    echo "Config transfer aborted. Setup complete."
+    exit 0
+fi
+
+mkdir -p "$BACKUP_DIR"
+
+# Get list of items in config source
+cd "$CONFIG_SOURCE"
+ITEMS=($(ls -A))
+cd - >/dev/null
+
+if [[ ${#ITEMS[@]} -eq 0 ]]; then
+    echo "No items found in $CONFIG_SOURCE. Nothing to transfer."
+    exit 0
+fi
+
+echo "Detected config items: ${ITEMS[*]}"
+
+# Transfer each item
+for item in "${ITEMS[@]}"; do
+    source_item="$CONFIG_SOURCE/$item"
+    target_item="$HOME/.config/$item"
+
+    if [[ -e "$target_item" ]]; then
+        echo "Backing up $target_item to $BACKUP_DIR/$item"
+        mv "$target_item" "$BACKUP_DIR/$item"
+    fi
+
+    echo "Transferring $item to $target_item"
+    cp -r "$source_item" "$target_item"
+done
+
+echo "Config transfer complete."
+echo "Backups stored in: $BACKUP_DIR"
+
 echo "Consider rebooting or logging out/in for all changes to take effect."
 echo "You may now proceed to install your dotfiles or configure Hyprland further."
