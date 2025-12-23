@@ -1,4 +1,6 @@
-# Install Script Template README
+# Install Script Template
+
+## I made this script mostly for personal use.
 
 ## Overview
 
