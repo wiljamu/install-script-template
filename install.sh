@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Config & Backup directories
-CONFIG_SOURCE="$SCRIPT_DIR/config/"
-BACKUP_DIR="$HOME/.config/backup-$(date +%Y%m%d-%H%M%S)"
-
 # Define list of required packages.
 PACKAGE_LIST="pkg_list.txt"
 
 echo "Starting package installation"
 
-# Package list files
+# Finding directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Config & Backup directories
+CONFIG_SOURCE="$SCRIPT_DIR/config"
+BACKUP_DIR="$HOME/.config/backup-$(date +%Y%m%d-%H%M%S)"
+
+# Package list files
 CORE_PKGS="$SCRIPT_DIR/core_pkgs.txt"
 OPTIONAL_PKGS="$SCRIPT_DIR/optional_pkgs.txt"
 AUR_PKGS="$SCRIPT_DIR/aur_pkgs.txt"
